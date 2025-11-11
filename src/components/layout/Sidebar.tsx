@@ -1,0 +1,128 @@
+import { NavLink } from 'react-router-dom';
+import { cn } from '@/lib/utils';
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  ChefHat,
+  MessageCircle,
+  Bell,
+  LogOut,
+} from 'lucide-react';
+
+export type NavItem = {
+  path: string;
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  description: string;
+};
+
+interface SidebarProps {
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+}
+
+const navigationItems: NavItem[] = [
+  { path: '/dashboard', name: 'Dashboard', icon: LayoutDashboard, description: 'Overview and analytics' },
+  { path: '/users', name: 'Users', icon: Users, description: 'Manage user accounts' },
+  { path: '/posts', name: 'Posts', icon: FileText, description: 'Content and articles' },
+  { path: '/recipes', name: 'Recipes', icon: ChefHat, description: 'Cooking recipes' },
+  { path: '/comments', name: 'Comments', icon: MessageCircle, description: 'User comments & reviews' },
+  { path: '/notifications', name: 'Notifications', icon: Bell, description: 'Alerts and messages' },
+];
+
+export const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+  const handleNavClick = () => {
+    if (window.innerWidth < 1024) setSidebarOpen(false);
+  };
+
+  return (
+    <>
+      {/* Overlay khi sidebar mở trên mobile */}
+      <div
+        className={cn(
+          'fixed inset-0 bg-black/40 z-40 transition-opacity duration-300 lg:hidden',
+          sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        )}
+        onClick={() => setSidebarOpen(false)}
+      />
+
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          'fixed lg:sticky top-0 left-0 h-screen border-r border-border bg-background/90 backdrop-blur-sm z-50 flex flex-col transition-all duration-300 ease-in-out shadow-lg',
+          sidebarOpen
+            ? 'w-64 translate-x-0'
+            : 'w-0 -translate-x-full lg:translate-x-0 lg:w-20'
+        )}
+      >
+        {/* Nội dung có thể cuộn */}
+        <div className="flex flex-col flex-1 min-h-0">
+
+          {/* Navigation Items */}
+          <nav className="flex-1 py-4 px-3 space-y-1">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={handleNavClick}
+                  className={({ isActive }) =>
+                    cn(
+                      'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 relative',
+                      isActive
+                        ? 'bg-orange-500/10 text-orange-600 shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent/40'
+                    )
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <Icon
+                        className={cn(
+                          'h-5 w-5 transition-all',
+                          isActive ? 'text-orange-500 scale-110' : 'group-hover:scale-105'
+                        )}
+                      />
+
+                      {/* Tên và mô tả */}
+                      <div
+                        className={cn(
+                          'flex flex-col min-w-0 transition-all duration-300',
+                          !sidebarOpen && 'lg:opacity-0 lg:scale-90 lg:absolute lg:left-12'
+                        )}
+                      >
+                        <span className="truncate">{item.name}</span>
+                        {sidebarOpen && (
+                          <span
+                            className={cn(
+                              'text-xs text-muted-foreground truncate transition-opacity duration-200',
+                              isActive ? 'opacity-90' : 'opacity-70'
+                            )}
+                          >
+                            {item.description}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Chấm active nhỏ bên phải */}
+                      {isActive && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-orange-500" />}
+
+                      {/* Tooltip khi sidebar đóng */}
+                      {!sidebarOpen && (
+                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-foreground text-background text-xs rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
+                          <span className="font-medium">{item.name}</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </NavLink>
+              );
+            })}
+          </nav>
+        </div>
+      </aside>
+    </>
+  );
+};
