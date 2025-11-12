@@ -1,12 +1,14 @@
 import { Bell, Search, Settings, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import logo from "@/assets/logo.jpg";
+import logo from "@/assets/logo.png";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/core/store/store.ts";
+import { setSidebarOpen } from "@/core/store/slices/uiSlice.ts";
 
-interface HeaderProps {
-  sidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
-}
-export const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
+export const Header = () => {
+  const dispatch = useDispatch();
+  const {isSidebarOpen} = useSelector((state: RootState) => state.ui);
+
     return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center justify-between px-6 gap-4">
@@ -32,7 +34,7 @@ export const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
             variant="ghost"
             size="icon"
             className="h-10 w-10"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={() => dispatch(setSidebarOpen(!isSidebarOpen))}
             aria-label="Toggle sidebar"
           >
             <Menu className="h-5 w-5" />
