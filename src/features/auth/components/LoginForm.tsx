@@ -1,24 +1,26 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Label } from '@/components/ui/label';
+import { useAppDispatch } from '@/core/store/store.ts';
 import { useLoginMutation } from '@/features/auth/services/authApi.ts';
 import { setCredentials } from '@/features/auth/slices/authSlice.ts';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
+import { Oval } from 'react-loader-spinner'; // 🌀 import spinner
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
 
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: 'anhkhoadevtool21@gmail.com',
     password: '12341234',
-    rememberMe: true,
+    rememberMe: false,
   });
 
   const [errors, setErrors] = useState({ email: '', password: '' });
@@ -51,23 +53,23 @@ const LoginForm: React.FC = () => {
         password: formData.password,
       }).unwrap();
 
-      console.log('Login response:', response);
-
-      const user = response.data; // dữ liệu người dùng
+      const user = response.data;
       const accessToken = user.accessToken;
       const refreshToken = user.refreshToken;
 
-      // Save to storage
-      const storage = formData.rememberMe ? localStorage : sessionStorage;
-      storage.setItem('user', JSON.stringify(user));
-      storage.setItem('accessToken', accessToken);
-      storage.setItem('refreshToken', refreshToken);
+      if (user.role === 'ADMIN') {
+        const storage = formData.rememberMe ? localStorage : sessionStorage;
+        storage.setItem('user', JSON.stringify(user));
+        storage.setItem('accessToken', accessToken);
+        storage.setItem('refreshToken', refreshToken);
 
-      // Update Redux state
-      dispatch(setCredentials({ user, accessToken, refreshToken }));
+        dispatch(setCredentials({ user, accessToken, refreshToken }));
 
-      toast.success(`Welcome back, ${user.username}!`);
-      navigate('/dashboard');
+        toast.success(`Welcome back, ${user.username}!`);
+        navigate('/dashboard');
+      } else {
+        toast.error('You do not have permission to access this resource.');
+      }
     } catch (err: any) {
       const msg =
         err?.data?.message || 'Login failed. Please check your credentials.';
@@ -151,19 +153,48 @@ const LoginForm: React.FC = () => {
             Remember me
           </Label>
         </div>
-        <Link to="/forgot-password" className="text-sm text-blue-600">
+        {/* <Link to="/forgot-password" className="text-sm text-blue-600">
           Forgot password?
-        </Link>
+        </Link> */}
       </div>
 
       {/* Submit */}
       <Button
         type="submit"
         disabled={isLoading}
-        className="w-full h-12 bg-blue-600 text-white font-semibold rounded-lg"
+        className="w-full h-12 bg-blue-600 text-white font-semibold rounded-lg flex items-center justify-center"
       >
-        {isLoading ? 'Signing in...' : 'Sign in'}
+        {isLoading ? (
+          <div className="flex items-center gap-2">
+            <Oval
+              height={20}
+              width={20}
+              color="#ffffff"
+              secondaryColor="#e0e0e0"
+              strokeWidth={5}
+              strokeWidthSecondary={5}
+              visible={true}
+              ariaLabel="loading"
+            />
+            <span>Signing in...</span>
+          </div>
+        ) : (
+          'Sign in'
+        )}
       </Button>
+
+      {/* Switch to register */}
+      <div className="text-center pt-4">
+        <span className="text-sm text-blue-700 mr-2">
+          Don't have an account?
+        </span>
+        <Link
+          to="/register"
+          className="font-semibold text-black hover:text-blue-600"
+        >
+          Sign up
+        </Link>
+      </div>
     </form>
   );
 };

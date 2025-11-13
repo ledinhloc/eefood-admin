@@ -1,37 +1,53 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Label } from '@/components/ui/label';
+import { useAppDispatch, useAppSelector } from '@/core/store/store.ts';
+import { useRegisterMutation } from '@/features/auth/services/authApi.ts';
+import { setError, setLoading } from '@/features/auth/slices/authSlice.ts';
+import { Role } from '@/features/auth/types/auth.types.ts';
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Oval } from 'react-loader-spinner';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const RegisterForm: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const [register] = useRegisterMutation();
+
   // Form state
   const [formData, setFormData] = useState({
     email: '',
-    fullName: '',
+    username: '',
     password: '',
     confirmPassword: '',
   });
+
+  // Toggle hiển thị mật khẩu
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Form errors
-  const [errors, setErrors] = useState<{
-    email: string;
-    fullName: string;
-    password: string;
-    confirmPassword: string;
-  }>({
+  const [errors, setErrors] = useState({
     email: '',
-    fullName: '',
+    username: '',
     password: '',
     confirmPassword: '',
   });
 
-  // Validation function
+  React.useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(setError(null));
+    }
+  }, [error, dispatch]);
+
   const validateForm = () => {
     const newErrors = {
       email: '',
-      fullName: '',
+      username: '',
       password: '',
       confirmPassword: '',
     };
@@ -42,10 +58,10 @@ const RegisterForm: React.FC = () => {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Please enter your full name';
-    } else if (formData.fullName.trim().length < 2) {
-      newErrors.fullName = 'Full name must be at least 2 characters';
+    if (!formData.username.trim()) {
+      newErrors.username = 'Please enter your full name';
+    } else if (formData.username.trim().length < 2) {
+      newErrors.username = 'Full name must be at least 2 characters';
     }
 
     if (!formData.password) {
@@ -63,7 +79,6 @@ const RegisterForm: React.FC = () => {
     setErrors(newErrors);
     return Object.values(newErrors).every((error) => error === '');
   };
-  // Handle input change
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -72,7 +87,6 @@ const RegisterForm: React.FC = () => {
       [name]: value,
     }));
 
-    // Clear error when user starts typing
     if (errors[name as keyof typeof errors]) {
       setErrors((prev) => ({
         ...prev,
@@ -85,13 +99,44 @@ const RegisterForm: React.FC = () => {
     e.preventDefault();
 
     if (!validateForm()) {
+      dispatch(setError('Please fix the errors in the form.'));
+      toast.error('Please fix the errors in the form.');
       return;
+    }
+
+    try {
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+      const data = {
+        email: formData.email,
+        username: formData.username,
+        password: formData.password,
+        role: Role.ADMIN,
+      };
+
+      const result = await register(data).unwrap();
+      if (result.data) {
+        toast.success('Registration successful! Please verify your OTP.');
+        navigate(
+          `/verify-otp?email=${encodeURIComponent(formData.email)}&otpType=REGISTER`
+        );
+      } else {
+        toast.error(result.message || 'Registration failed. Please try again.');
+      }
+    } catch (err: unknown) {
+      const errorMessage =
+        (error as { data?: { message?: string } })?.data?.message ||
+        'Registration failed. Please try again.';
+      dispatch(setError(errorMessage));
+      toast.error(errorMessage);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
   return (
     <form method="POST" onSubmit={onSubmit} className="space-y-4">
-      {/* User name */}
+      {/* Full name */}
       <div>
         <Label htmlFor="username" className="text-black">
           Full name
@@ -103,17 +148,18 @@ const RegisterForm: React.FC = () => {
             name="username"
             type="text"
             placeholder="John Dev"
-            value={formData.fullName}
+            value={formData.username}
             onChange={handleInputChange}
             className="pl-10 h-12 border-grey-300"
           />
         </div>
-        {errors.fullName && (
+        {errors.username && (
           <p className="text-sm font-medium text-red-500 mt-1">
-            {errors.fullName}
+            {errors.username}
           </p>
         )}
       </div>
+
       {/* Email */}
       <div>
         <Label htmlFor="email" className="text-black">
@@ -148,7 +194,7 @@ const RegisterForm: React.FC = () => {
           <Input
             id="password"
             name="password"
-            type={true ? 'text' : 'password'}
+            type={showPassword ? 'text' : 'password'}
             placeholder="••••••••"
             value={formData.password}
             onChange={handleInputChange}
@@ -159,9 +205,9 @@ const RegisterForm: React.FC = () => {
             variant="ghost"
             size="sm"
             className="absolute right-0 top-1/2 -translate-y-1/2 h-full px-3 hover:bg-transparent"
-            onClick={() => {}}
+            onClick={() => setShowPassword((prev) => !prev)}
           >
-            {true ? (
+            {showPassword ? (
               <EyeOff className="w-4 h-4 text-black" />
             ) : (
               <Eye className="w-4 h-4 text-black" />
@@ -177,18 +223,18 @@ const RegisterForm: React.FC = () => {
 
       {/* Confirm Password */}
       <div>
-        <Label htmlFor="password" className="text-black">
+        <Label htmlFor="confirmPassword" className="text-black">
           Confirm password
         </Label>
         <div className="relative mt-1">
           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-black" />
           <Input
-            id="password"
-            name="password"
-            type={true ? 'text' : 'password'}
+            id="confirmPassword"
+            name="confirmPassword"
+            type={showConfirmPassword ? 'text' : 'password'}
             placeholder="••••••••"
             value={formData.confirmPassword}
-            onChange={() => {}}
+            onChange={handleInputChange}
             className="pl-10 pr-10 h-12 border-grey-30"
           />
           <Button
@@ -196,9 +242,9 @@ const RegisterForm: React.FC = () => {
             variant="ghost"
             size="sm"
             className="absolute right-0 top-1/2 -translate-y-1/2 h-full px-3 hover:bg-transparent"
-            onClick={() => {}}
+            onClick={() => setShowConfirmPassword((prev) => !prev)}
           >
-            {true ? (
+            {showConfirmPassword ? (
               <EyeOff className="w-4 h-4 text-black" />
             ) : (
               <Eye className="w-4 h-4 text-black" />
@@ -215,13 +261,29 @@ const RegisterForm: React.FC = () => {
       {/* Submit */}
       <Button
         type="submit"
-        disabled={false}
+        disabled={isLoading}
         className="w-full h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-blue-600 text-white font-semibold rounded-lg transition-transform duration-200 hover:scale-[1.02]"
       >
-        {false ? 'Signing up...' : 'Sign up'}
+        {isLoading ? (
+          <div className="flex items-center gap-2">
+            <Oval
+              height={20}
+              width={20}
+              color="#ffffff"
+              secondaryColor="#e0e0e0"
+              strokeWidth={5}
+              strokeWidthSecondary={5}
+              visible={true}
+              ariaLabel="loading"
+            />
+            <span>Signing up...</span>
+          </div>
+        ) : (
+          'Sign up'
+        )}
       </Button>
 
-      {/* Back to login button */}
+      {/* Back to login */}
       <div className="text-center">
         <p className="text-gray-600">
           Already have an account?{' '}

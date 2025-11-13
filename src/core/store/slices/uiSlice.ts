@@ -15,7 +15,7 @@ interface UIState {
 
 const initialState: UIState = {
     activeTab: 'dashboard',
-    isSidebarOpen: false,
+    isSidebarOpen: true,
 };
 
 const uiSlice = createSlice({

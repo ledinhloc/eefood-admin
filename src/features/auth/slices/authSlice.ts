@@ -137,7 +137,7 @@ export const {
   updateRefreshToken,
 } = authSlice.actions;
 
-// Reset API cache (nếu dùng RTK Query)
+// Reset API cache 
 export const resetApiState = api.util.resetApiState;
 
 export default authSlice.reducer;

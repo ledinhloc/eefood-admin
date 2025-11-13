@@ -42,7 +42,6 @@ const LoginPage = () => {
           <CardContent className="w-full max-w-md space-y-6">
             <LoginForm />
           </CardContent>
-
         </div>
       </Card>
     </div>

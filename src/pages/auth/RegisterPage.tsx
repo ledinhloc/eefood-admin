@@ -1,5 +1,4 @@
 'use client';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -9,12 +8,8 @@ import {
 } from '@/components/ui/card';
 import AuthIllustration from '@/features/auth/components/AuthIllustration.tsx';
 import RegisterForm from '@/features/auth/components/RegisterForm.tsx';
-import { Link } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
-  const navigator = useNavigate();
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-violet-100 relative overflow-hidden p-4">
       {/* Background decoration */}
@@ -34,7 +29,7 @@ const RegisterPage = () => {
         </div>
 
         {/* Right side - Register Form */}
-        <div className="flex flex-col items-center justify-center px-6 py-20 lg:px-18 bg-white">
+        <div className="flex flex-col items-center justify-center px-6 py-10 lg:px-14 bg-white">
           <CardHeader className="text-center mb-4">
             <CardTitle className="text-3xl font-bold text-black mb-2">
               Sign Up
