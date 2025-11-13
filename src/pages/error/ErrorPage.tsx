@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { ShieldAlert, SearchX, ServerCrash, CircleAlert } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface ErrorPageProps {
   code?: number;
@@ -22,20 +21,17 @@ export default function ErrorPage({
 
   let errorTitle = title;
   let errorDescription = description;
-  let Icon = CircleAlert;
 
   switch (errorCode) {
     case 403:
       errorTitle = errorTitle ?? 'Access Denied';
       errorDescription =
         errorDescription ?? 'You do not have permission to access this page.';
-      Icon = ShieldAlert;
       break;
     case 500:
       errorTitle = errorTitle ?? 'Server Error';
       errorDescription =
         errorDescription ?? 'Something went wrong. Please try again later.';
-      Icon = ServerCrash;
       break;
     default:
       errorCode = 404;
@@ -43,25 +39,40 @@ export default function ErrorPage({
       errorDescription =
         errorDescription ??
         'The page you are looking for does not exist or has been moved.';
-      Icon = SearchX;
       break;
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-muted text-center p-6">
-      <div className="bg-white dark:bg-card shadow-lg rounded-2xl p-10 max-w-md w-full">
-        <div className="flex flex-col items-center space-y-4">
-          <Icon className="text-primary w-16 h-16" />
-          <h1 className="text-7xl font-bold text-foreground">{errorCode}</h1>
-          <h2 className="text-2xl font-semibold">{errorTitle}</h2>
-          <p className="text-muted-foreground">{errorDescription}</p>
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 p-6">
+      <div className="flex flex-col items-center space-y-8 max-w-2xl w-full">
+        {/* Error Code */}
+        <div className="text-center space-y-4">
+          <h1 className="text-8xl md:text-9xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            {errorCode}
+          </h1>
+          <h2 className="text-3xl md:text-4xl font-semibold text-foreground">
+            {errorTitle}
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-md mx-auto">
+            {errorDescription}
+          </p>
+        </div>
 
-          <div className="flex space-x-4 mt-6">
-            <Button variant="outline" onClick={() => navigate(-1)}>
-              Go Back
-            </Button>
-            <Button onClick={() => navigate('/login')}>Home</Button>
-          </div>
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 mt-8">
+          <Button
+            variant="outline"
+            onClick={() => navigate(-1)}
+            className="px-8 py-6 text-lg"
+          >
+            Go Back
+          </Button>
+          <Button
+            onClick={() => navigate('/login')}
+            className="px-8 py-6 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          >
+            Go to Home
+          </Button>
         </div>
       </div>
     </div>

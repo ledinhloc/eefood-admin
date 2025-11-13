@@ -6,7 +6,7 @@ import { useLoginMutation } from '@/features/auth/services/authApi.ts';
 import { setCredentials } from '@/features/auth/slices/authSlice.ts';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
-import { Oval } from 'react-loader-spinner'; // 🌀 import spinner
+import { Oval } from 'react-loader-spinner'; //import spinner
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 

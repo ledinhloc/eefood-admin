@@ -1,6 +1,7 @@
 import { api } from '@/core/api/api';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { AuthState, User } from '../types/auth.types';
+import { normalizeGender } from '@/utils/normalizeGender.ts';
 
 // Helper function: lấy user từ local hoặc session
 const getUserFromStorage = (): User | null => {
@@ -75,7 +76,12 @@ const authSlice = createSlice({
 
     // Cập nhật user
     setUser: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
+       const normalizedUser = {
+         ...action.payload,
+         gender: normalizeGender(action.payload.gender),
+       };
+       state.user = normalizedUser;
+
       if (localStorage.getItem('user')) {
         localStorage.setItem('user', JSON.stringify(action.payload));
       } else {

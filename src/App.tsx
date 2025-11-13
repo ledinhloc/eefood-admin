@@ -10,6 +10,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { Layout } from './components/layout';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import ProfilePage from '@/pages/auth/ProfilePage.tsx';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/verify-otp" element={<VerifyOtpPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         {/* Main Routes */}
         <Route element={<AdminRoute />}>
           <Route element={<Layout />}>
