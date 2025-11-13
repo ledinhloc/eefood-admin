@@ -29,7 +29,7 @@ const RegisterPage = () => {
         </div>
 
         {/* Right side - Register Form */}
-        <div className="flex flex-col items-center justify-center px-6 py-10 lg:px-14 bg-white">
+        <div className="flex flex-col items-center justify-center px-6 py-4 lg:px-6 bg-white">
           <CardHeader className="text-center mb-4">
             <CardTitle className="text-3xl font-bold text-black mb-2">
               Sign Up

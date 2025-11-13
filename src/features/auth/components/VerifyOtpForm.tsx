@@ -7,20 +7,23 @@ import {
   CardTitle,
 } from '@/components/ui/card.tsx';
 import { Input } from '@/components/ui/input.tsx';
-import { useAppDispatch } from '@/core/store/store.ts';
+import { useAppDispatch, useAppSelector } from '@/core/store/store.ts';
 import { useVerifyOtpMutation } from '@/features/auth/services/authApi.ts';
-import { setError, setLoading } from '@/features/auth/slices/authSlice.ts';
+import {
+  clearOtpData,
+  setError,
+  setLoading,
+  setOtpData,
+} from '@/features/auth/slices/authSlice.ts';
 import { ArrowLeft, RotateCcw, Shield } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export const VerifyOtpForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [searchParams] = useSearchParams();
-  const email = searchParams.get('email') || '';
-  const otpType = searchParams.get('type') || 'REGISTER';
+  const { email, otpType } = useAppSelector((s) => s.auth);
   const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
 
   // Form state
@@ -90,6 +93,10 @@ export const VerifyOtpForm = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !otpType) {
+      toast.error('Email or OTP type is missing. Please try again.');
+      return;
+    }
     const otpCode = otp.join('');
     if (otpCode.length !== 6) {
       setOtpError('Please enter the 6-digit OTP code');
@@ -101,13 +108,20 @@ export const VerifyOtpForm = () => {
       dispatch(setError(null));
 
       const result = await verifyOtp({
-        email,
+        email: email,
         otpCode: otpCode,
         otpType: otpType,
       }).unwrap();
-      if (result.message) {
+      if (result.message && otpType == 'REGISTER') {
         toast.success('Verification successful! Please log in.');
+        dispatch(clearOtpData());
         navigate('/login');
+      } else if (result.message && otpType == 'FORGOT_PASSWORD') {
+        toast.success('Verification successful! Please log in.');
+        dispatch(
+          setOtpData({ email: email, otpCode: otpCode, otpType: otpType })
+        );
+        navigate('/reset-password');
       }
     } catch (error: unknown) {
       const errorMessage =

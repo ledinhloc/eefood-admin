@@ -68,7 +68,14 @@ const LoginForm: React.FC = () => {
         storage.setItem('accessToken', accessToken);
         storage.setItem('refreshToken', refreshToken);
 
-        dispatch(setCredentials({ user, accessToken, refreshToken, rememberMe: formData.rememberMe }));
+        dispatch(
+          setCredentials({
+            user,
+            accessToken,
+            refreshToken,
+            rememberMe: formData.rememberMe,
+          })
+        );
 
         toast.success(`Welcome back, ${user.username}!`);
         navigate('/dashboard');
@@ -158,9 +165,9 @@ const LoginForm: React.FC = () => {
             Remember me
           </Label>
         </div>
-        {/* <Link to="/forgot-password" className="text-sm text-blue-600">
+        <Link to="/forgot-password" className="text-sm text-blue-600">
           Forgot password?
-        </Link> */}
+        </Link>
       </div>
 
       {/* Submit */}

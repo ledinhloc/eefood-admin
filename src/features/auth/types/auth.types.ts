@@ -38,6 +38,9 @@ export interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
+  email: string | null;
+  otpType: 'REGISTER' | 'FORGOT_PASSWORD' | null;
+  otpCode: string | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -69,5 +72,23 @@ export const Role = {
   ADMIN: 'ADMIN',
   USER: 'USER',
 } as const;
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ForgotPasswordResponse {
+  message: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  otp: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordResponse {
+  message: string;
+}
 
 export type Role = (typeof Role)[keyof typeof Role];

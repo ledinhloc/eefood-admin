@@ -24,6 +24,9 @@ const initialState: AuthState = {
   accessToken: getToken('accessToken'),
   refreshToken: getToken('refreshToken'),
   isAuthenticated: Boolean(getToken('accessToken')),
+  email: null,
+  otpType: null,
+  otpCode: '',
   isLoading: false,
   error: null,
 };
@@ -125,6 +128,24 @@ const authSlice = createSlice({
         sessionStorage.setItem('refreshToken', action.payload);
       }
     },
+    setOtpData: (
+      state,
+      action: PayloadAction<{
+        email?: string | null;
+        otpCode?: string | null;
+        otpType?: 'REGISTER' | 'FORGOT_PASSWORD' | null;
+      }>
+    ) => {
+      const { email, otpCode, otpType } = action.payload;
+      if (email !== undefined) state.email = email;
+      if (otpCode !== undefined) state.otpCode = otpCode;
+      if (otpType !== undefined) state.otpType = otpType;
+    },
+    clearOtpData: (state) => {
+      state.otpCode = null;
+      state.otpType = null;
+      state.email = null;
+    },
   },
 });
 
@@ -137,6 +158,8 @@ export const {
   clearError,
   updateAccessToken,
   updateRefreshToken,
+  setOtpData,
+  clearOtpData,
 } = authSlice.actions;
 
 // Reset API cache
