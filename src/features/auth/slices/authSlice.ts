@@ -1,6 +1,6 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { User, AuthState } from '../types/auth.types';
 import { api } from '@/core/api/api';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { AuthState, User } from '../types/auth.types';
 
 // Helper function: lấy user từ local hoặc session
 const getUserFromStorage = (): User | null => {
@@ -53,6 +53,8 @@ const authSlice = createSlice({
       state.refreshToken = refreshToken;
       state.isAuthenticated = true;
       state.error = null;
+
+      localStorage.setItem('rememberMe', String(rememberMe));
 
       // Nếu rememberMe → lưu vào localStorage, ngược lại lưu vào sessionStorage
       const storage = rememberMe ? localStorage : sessionStorage;
@@ -137,7 +139,7 @@ export const {
   updateRefreshToken,
 } = authSlice.actions;
 
-// Reset API cache 
+// Reset API cache
 export const resetApiState = api.util.resetApiState;
 
 export default authSlice.reducer;

@@ -7,7 +7,6 @@ import { setCredentials } from '@/features/auth/slices/authSlice.ts';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { Oval } from 'react-loader-spinner'; // 🌀 import spinner
-import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -17,10 +16,15 @@ const LoginForm: React.FC = () => {
   const [login, { isLoading }] = useLoginMutation();
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const getRememberMeStatus = () => {
+    const remembered = localStorage.getItem('rememberMe');
+    return remembered === 'true';
+  };
   const [formData, setFormData] = useState({
     email: 'anhkhoadevtool21@gmail.com',
     password: '12341234',
-    rememberMe: false,
+    rememberMe: getRememberMeStatus(),
   });
 
   const [errors, setErrors] = useState({ email: '', password: '' });
@@ -58,12 +62,13 @@ const LoginForm: React.FC = () => {
       const refreshToken = user.refreshToken;
 
       if (user.role === 'ADMIN') {
+        localStorage.setItem('rememberMe', String(formData.rememberMe));
         const storage = formData.rememberMe ? localStorage : sessionStorage;
         storage.setItem('user', JSON.stringify(user));
         storage.setItem('accessToken', accessToken);
         storage.setItem('refreshToken', refreshToken);
 
-        dispatch(setCredentials({ user, accessToken, refreshToken }));
+        dispatch(setCredentials({ user, accessToken, refreshToken, rememberMe: formData.rememberMe }));
 
         toast.success(`Welcome back, ${user.username}!`);
         navigate('/dashboard');
