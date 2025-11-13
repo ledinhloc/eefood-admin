@@ -9,7 +9,7 @@ export interface User {
   email: string;
   role: string;
   dob?: string;
-  gender?: string;
+  gender?: Gender;
   address?: Address;
   provider?: string;
   avatarUrl?: string;
@@ -91,4 +91,20 @@ export interface ResetPasswordResponse {
   message: string;
 }
 
+export interface ProfileResponse {
+  message: string;
+  data: User;
+}
+
+export interface UpdateProfileResponse {
+  message: string;
+  data: User;
+}
+
 export type Role = (typeof Role)[keyof typeof Role];
+export type UpdateProfileRequest = Partial<Omit<User, 'role'>>;
+
+export type Gender = 'MALE' | 'FEMALE' | 'OTHER';
+
+export const isValidGender = (value: string | undefined): value is Gender =>
+  value === 'MALE' || value === 'FEMALE' || value === 'OTHER';

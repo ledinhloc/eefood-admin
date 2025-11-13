@@ -4,10 +4,13 @@ import type {
   ForgotPasswordResponse,
   LoginRequest,
   LoginResponse,
+  ProfileResponse,
   RegisterRequest,
   RegisterResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  UpdateProfileRequest,
+  UpdateProfileResponse,
   VerifyOtpRequest,
   VerifyOtpResponse,
 } from '@/features/auth/types/auth.types';
@@ -60,6 +63,25 @@ export const authApi = api.injectEndpoints({
         data: data,
       }),
     }),
+    getProfile: builder.query<ProfileResponse, void>({
+      query: () => ({
+        url: '/users/me',
+        method: 'GET',
+      }),
+      providesTags: ['Profile'],
+    }),
+    // Update user profile
+    updateProfile: builder.mutation<
+      UpdateProfileResponse,
+      UpdateProfileRequest
+    >({
+      query: (profileData) => ({
+        url: '/users/update',
+        method: 'PUT',
+        data: profileData,
+      }),
+      invalidatesTags: ['Profile'],
+    }),
   }),
   overrideExisting: false,
 });
@@ -70,4 +92,6 @@ export const {
   useVerifyOtpMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
-} = authApi;
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+} = authApi;  
