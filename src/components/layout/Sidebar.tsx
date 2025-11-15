@@ -9,7 +9,7 @@ import {
   MessageCircle,
   Users,
 } from 'lucide-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 export type NavItem = {
@@ -20,21 +20,55 @@ export type NavItem = {
 };
 
 const navigationItems: NavItem[] = [
-  { path: '/dashboard', name: 'Dashboard', icon: LayoutDashboard, description: 'Overview and analytics' },
-  { path: '/users', name: 'Users', icon: Users, description: 'Manage user accounts' },
-  { path: '/posts', name: 'Posts', icon: FileText, description: 'Content and articles' },
-  { path: '/recipes', name: 'Recipes', icon: ChefHat, description: 'Cooking recipes' },
-  { path: '/comments', name: 'Comments', icon: MessageCircle, description: 'User comments & reviews' },
-  { path: '/notifications', name: 'Notifications', icon: Bell, description: 'Alerts and messages' },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    icon: LayoutDashboard,
+    description: 'Overview and analytics',
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    icon: Users,
+    description: 'Manage user accounts',
+  },
+  {
+    path: '/posts',
+    name: 'Posts',
+    icon: FileText,
+    description: 'Content and articles',
+  },
+  {
+    path: '/recipes',
+    name: 'Recipes',
+    icon: ChefHat,
+    description: 'Cooking recipes',
+  },
+  {
+    path: '/comments',
+    name: 'Comments',
+    icon: MessageCircle,
+    description: 'User comments & reviews',
+  },
+  {
+    path: '/notifications',
+    name: 'Notifications',
+    icon: Bell,
+    description: 'Alerts and messages',
+  },
 ];
 
 export const Sidebar = () => {
-  const { activeTab, isSidebarOpen } = useSelector((state: RootState) => state.ui);
+  const { activeTab, isSidebarOpen } = useSelector(
+    (state: RootState) => state.ui
+  );
   const dispatch = useAppDispatch();
 
   const handleNavClick = (path: string) => {
     dispatch(setActiveTab(path.replace('/', '') as any));
-    if (window.innerWidth < 1024) dispatch(setSidebarOpen(false));
+    if (window.matchMedia('(max-width: 1023px)').matches) {
+      dispatch(setSidebarOpen(false));
+    }
   };
 
   return (
@@ -77,13 +111,16 @@ export const Sidebar = () => {
                   <Icon
                     className={cn(
                       'h-5 w-5 transition-all',
-                      isActive ? 'text-orange-500 scale-110' : 'group-hover:scale-105'
+                      isActive
+                        ? 'text-orange-500 scale-110'
+                        : 'group-hover:scale-105'
                     )}
                   />
                   <div
                     className={cn(
                       'flex flex-col min-w-0 transition-all duration-300',
-                      !isSidebarOpen && 'lg:opacity-0 lg:scale-90 lg:absolute lg:left-12'
+                      !isSidebarOpen &&
+                        'lg:opacity-0 lg:scale-90 lg:absolute lg:left-12'
                     )}
                   >
                     <span className="truncate">{item.name}</span>

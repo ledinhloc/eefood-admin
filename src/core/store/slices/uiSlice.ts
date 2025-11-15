@@ -13,8 +13,13 @@ interface UIState {
     isSidebarOpen: boolean;
 }
 
+const getInitialActiveTab = (): ActiveTab => {
+  const storedTab = localStorage.getItem('activeTab') as ActiveTab | null;
+  return storedTab ?? 'dashboard';
+};
+
 const initialState: UIState = {
-    activeTab: 'dashboard',
+    activeTab: getInitialActiveTab(),
     isSidebarOpen: true,
 };
 
@@ -24,7 +29,7 @@ const uiSlice = createSlice({
   reducers: {
     setActiveTab(state, action: PayloadAction<ActiveTab>) {
       state.activeTab = action.payload;
-      state.isSidebarOpen = false;
+      localStorage.setItem('activeTab', action.payload);
     },
     toggleSidebar(state) {
       state.isSidebarOpen = !state.isSidebarOpen;
