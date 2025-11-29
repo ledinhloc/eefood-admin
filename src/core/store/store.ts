@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 import uiReducer from './slices/uiSlice.ts';
 import authReducer from '@/features/auth/slices/authSlice.ts';
+import postReducer from '@/features/posts/slices/postSlice';
 import { api } from '../api/api';
 export const store = configureStore({
   reducer: {
     ui: uiReducer,
     auth: authReducer,
+    post: postReducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>

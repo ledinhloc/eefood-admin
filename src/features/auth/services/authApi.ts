@@ -5,6 +5,8 @@ import type {
   LoginRequest,
   LoginResponse,
   ProfileResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
   RegisterRequest,
   RegisterResponse,
   ResetPasswordRequest,
@@ -82,6 +84,13 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Profile'],
     }),
+    refreshToken: builder.mutation<RefreshTokenResponse, RefreshTokenRequest>({
+      query: (tokenData) => ({
+        url: '/auth/refresh',
+        method: 'POST',
+        data: tokenData,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -94,4 +103,5 @@ export const {
   useResetPasswordMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
+  useRefreshTokenMutation
 } = authApi;  

@@ -11,6 +11,7 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { PostQueryParams } from '../types/post.types';
+import CategorySelect from '@/features/recipes/components/CategorySelect.tsx';
 
 export default function PostFilters({
   onFilter,
@@ -151,10 +152,9 @@ export default function PostFilters({
             }
           />
 
-          <Input
-            placeholder="Category"
-            value={filters.category ?? ''}
-            onChange={(e) => update('category', e.target.value)}
+          <CategorySelect
+            value={filters.category?.toString()}
+            onChange={(v) => update('category', v)}
           />
 
           <Select
@@ -169,6 +169,20 @@ export default function PostFilters({
               <SelectItem value="oldest">Oldest</SelectItem>
               <SelectItem value="popular">Popular</SelectItem>
               <SelectItem value="toprated">Top Rated</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={filters.status ?? ''}
+            onValueChange={(v) => update('status', v)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="PENDING">Chưa duyệt</SelectItem>
+              <SelectItem value="APPROVED">Đã duyệt</SelectItem>
+              <SelectItem value="REJECT">Từ chối</SelectItem>
             </SelectContent>
           </Select>
 
