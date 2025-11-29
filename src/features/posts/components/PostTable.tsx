@@ -11,7 +11,6 @@ import {
 import {
   Angry,
   ArrowUpDown,
-  EyeOff,
   Frown,
   Heart,
   Laugh,
@@ -22,7 +21,15 @@ import {
 import { useState, type JSX } from 'react';
 import type { PostItem } from '../types/post.types';
 
-export default function PostTable({ posts }: { posts: PostItem[] }) {
+export default function PostTable({
+  posts,
+  onEdit,
+  onDelete,
+}: {
+  posts: PostItem[];
+  onEdit: (post: PostItem) => void;
+  onDelete: (post: PostItem) => void;
+}) {
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
@@ -57,6 +64,18 @@ export default function PostTable({ posts }: { posts: PostItem[] }) {
     HARD: 'bg-red-500 text-white',
     MEDIUM: 'bg-yellow-500 text-black',
     EASY: 'bg-green-500 text-white',
+  };
+
+  const statusColor: Record<string, string> = {
+    REJECT: 'bg-orange-500 text-white',
+    PENDING: 'bg-yellow-500 text-black',
+    APPROVED: 'bg-blue-500 text-white',
+  };
+
+  const statusText: Record<string, string> = {
+    REJECT: 'Từ chối',
+    PENDING: 'Chưa duyệt',
+    APPROVED: 'Đã duyệt',
   };
 
   const reactionIcons: Record<string, JSX.Element> = {
@@ -113,6 +132,15 @@ export default function PostTable({ posts }: { posts: PostItem[] }) {
             >
               <div className="flex items-center justify-center gap-1">
                 Difficulty <ArrowUpDown className="w-4 h-4" />
+              </div>
+            </TableHead>
+
+            <TableHead
+              className="cursor-pointer text-center font-bold"
+              onClick={() => handleSort('difficulty')}
+            >
+              <div className="flex items-center justify-center gap-1">
+                Status <ArrowUpDown className="w-10 h-4" />
               </div>
             </TableHead>
 
@@ -201,14 +229,25 @@ export default function PostTable({ posts }: { posts: PostItem[] }) {
               </TableCell>
 
               <TableCell>
-                {Object.entries(p.reactionCounts || {}).map(([k, v]) => (
-                  <div
-                    key={k}
-                    className="text-sm flex items-center justify-center gap-1"
-                  >
-                    {reactionIcons[k] || null} {v ?? 0}
-                  </div>
-                ))}
+                <span
+                  className={`px-2 py-1 rounded text-xs ${statusColor[p.status] || 'bg-gray-300'}`}
+                >
+                  {statusText[p.status]}
+                </span>
+              </TableCell>
+
+              <TableCell>
+                {Object.entries(p.reactionCounts ?? {}).map(([k, v]) => {
+                  const count = v ?? 0;
+                  return (
+                    <div
+                      key={k}
+                      className="text-sm flex items-center justify-center gap-1"
+                    >
+                      {reactionIcons[k] ?? null} {count}
+                    </div>
+                  );
+                })}
               </TableCell>
 
               <TableCell>{p.totalShares ?? 0}</TableCell>
@@ -223,10 +262,14 @@ export default function PostTable({ posts }: { posts: PostItem[] }) {
 
               <TableCell>
                 <div className="flex gap-2 justify-center">
-                  <Button variant="outline" size="icon">
+                  <Button
+                    onClick={() => onEdit(p)}
+                    variant="outline"
+                    size="icon"
+                  >
                     <Pencil className="w-4 h-4" />
                   </Button>
-                  <Button variant="destructive" size="icon">
+                  <Button onClick={() => onDelete(p)} variant="destructive" size="icon">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

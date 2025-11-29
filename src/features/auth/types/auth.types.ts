@@ -101,6 +101,24 @@ export interface UpdateProfileResponse {
   data: User;
 }
 
+export interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+export interface RefreshTokenResponse {
+  status: number;
+  message: string;
+  data: {
+    access_token: string;
+    expires_in: number;
+    refresh_expires_in: number;
+    refresh_token: string;
+    token_type: string;
+    session_state: string;
+    scope: string;
+  };
+}
+
 export type Role = (typeof Role)[keyof typeof Role];
 export type UpdateProfileRequest = Partial<Omit<User, 'role'>>;
 

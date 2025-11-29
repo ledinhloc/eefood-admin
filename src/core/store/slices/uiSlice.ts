@@ -37,6 +37,13 @@ const uiSlice = createSlice({
     setSidebarOpen(state, action: PayloadAction<boolean>) {
       state.isSidebarOpen = action.payload;
     },
+    resetUI() {
+      localStorage.removeItem('activeTab');
+      return {
+        activeTab: 'dashboard',
+        isSidebarOpen: true,
+      };
+    },
   },
 });
 
@@ -44,6 +51,7 @@ export const {
   setActiveTab,
   toggleSidebar,
   setSidebarOpen,
+  resetUI,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

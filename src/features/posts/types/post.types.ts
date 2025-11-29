@@ -13,7 +13,10 @@ export interface PostItem {
   recipeCategories: string[];
   reactionCounts: Record<string, number>;
   totalShares: number;
-  createdAt: string;
+  recipeId: number;
+  description: string;
+  status: string;
+  createdAt: Date;
 }
 
 export interface PostQueryParams {
@@ -28,6 +31,7 @@ export interface PostQueryParams {
   minCookTime?: number;
   minReactionCount?: number;
   minTotalShares?: number;
+  status?: string;
   sortBy?: string;
   page?: number;
   size?: number;
@@ -44,4 +48,28 @@ export interface PostPageResponse {
   };
 }
 
-type Difficulty = 'HARD' | 'MEDIUM' | 'EASY';
+export interface PostCreateUpdateRequest {
+  id: number;
+  content: string;
+  status: string;
+}
+
+export interface PostPublishResponse {
+  id: number;
+  recipeId: number;
+  userId: number;
+  title: string;
+  content: string;
+  imageUrl: string;
+  createdAt: Date;
+
+  difiiculty: string;
+  location: string;
+  prepTime: string;
+  cookTime: string;
+  countReaction: number;
+  countComment: number;
+  status: string;
+}
+
+export type Difficulty = 'HARD' | 'MEDIUM' | 'EASY';
