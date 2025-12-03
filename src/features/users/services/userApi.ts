@@ -13,17 +13,17 @@ export const userApi = api.injectEndpoints({
     }),
 
     createUser: builder.mutation<UserResponse, UserCreateRequest>({
-      query: (body) => ({ url: '/users', method: 'POST', body }),
+      query: (data) => ({ url: '/users', method: 'POST', data }),
       invalidatesTags: ['Users'],
     }),
 
      updateUser: builder.mutation<UserResponse, UserUpdateRequest>({
-      query: (body) => ({ url: '/users/update', method: 'PUT', body }),
+      query: (data) => ({ url: '/users/update', method: 'PUT', data }),
       invalidatesTags: ['Users'],
     }),
 
      updateRoleUser: builder.mutation<UserResponse, AdminUpdateRequest>({
-      query: (body) => ({ url: '/users/update-role', method: 'PUT', body }),
+      query: (data) => ({ url: '/users/update-role', method: 'PUT', data }),
       invalidatesTags: ['Users'],
     }),
 

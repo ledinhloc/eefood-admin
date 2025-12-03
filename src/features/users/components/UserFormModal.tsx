@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { UserResponse } from '../types/user.types';
 import type { UserCreateRequest, UserUpdateRequest } from '../types/user.types';
+import { uploadToCloudinary } from '@/utils/uploadMedia';
 
 interface Props {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, user }: Props
   const [city, setCity] = useState(user?.address?.city || '');
   const [street, setStreet] = useState(user?.address?.street || '');
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || '');
+  const [avatarFile, setAvatarFile] = useState<File | null>(null); // file mới
   const [allergies, setAllergies] = useState(user?.allergies?.join(',') || '');
   const [eatingPreferences, setEatingPreferences] = useState(user?.eatingPreferences?.join(',') || '');
   const [password, setPassword] = useState('');
@@ -34,11 +36,31 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, user }: Props
     setAvatarUrl(user?.avatarUrl || '');
     setAllergies(user?.allergies?.join(',') || '');
     setEatingPreferences(user?.eatingPreferences?.join(',') || '');
+    setAvatarFile(null);
   }, [user]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setAvatarFile(file);
+      setAvatarUrl(URL.createObjectURL(file)); // preview ảnh
+    }
+  };
+
+  const handleSubmit = async () => {
+    let finalAvatarUrl = avatarUrl;
+    if (avatarFile) {
+      try {
+        finalAvatarUrl = await uploadToCloudinary(avatarFile, 'image');
+      } catch (err) {
+        console.error('Upload avatar failed:', err);
+        alert('Failed to upload avatar');
+        return;
+      }
+    }
+
     const payload = user
       ? {
           id: user.id,
@@ -48,7 +70,7 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, user }: Props
           dob,
           gender,
           address: { city, street },
-          avatarUrl,
+          avatarUrl: finalAvatarUrl,
           allergies: allergies.split(',').map((s) => s.trim()),
           eatingPreferences: eatingPreferences.split(',').map((s) => s.trim()),
         } as UserUpdateRequest
@@ -60,11 +82,14 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, user }: Props
           gender,
           address: { city, street },
           provider: 'NORMAL', // mặc định LOCAL
-          avatarUrl,
+          avatarUrl: finalAvatarUrl,
           password,
           allergies: allergies.split(',').map((s) => s.trim()),
           eatingPreferences: eatingPreferences.split(',').map((s) => s.trim()),
         } as UserCreateRequest;
+
+        // console.log("------payload:     "+payload.username);
+    // console.log({ username, email, role, dob, gender, city, street, password, allergies, eatingPreferences, avatarUrl });
 
     onSubmit(payload);
   };
@@ -73,6 +98,16 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, user }: Props
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <h2 className="text-xl font-bold mb-4">{user ? 'Update User' : 'Create User'}</h2>
+
+        {/* Avatar */}
+        <div className="mb-3 flex items-center gap-4">
+          <img
+            src={avatarUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'}
+            alt="Avatar"
+            className="w-16 h-16 rounded-full border"
+          />
+          <input type="file" accept="image/*" onChange={handleAvatarChange} />
+        </div>
 
         <input
           className="w-full mb-3 px-3 py-2 border rounded-lg"
@@ -88,6 +123,7 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, user }: Props
           onChange={(e) => setEmail(e.target.value)}
         />
 
+        {/* Provider */}
         {!user && (
           <input
             className="w-full mb-3 px-3 py-2 border rounded-lg bg-gray-100"
@@ -95,7 +131,6 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, user }: Props
             disabled
           />
         )}
-
         {user && (
           <input
             className="w-full mb-3 px-3 py-2 border rounded-lg bg-gray-100"
@@ -145,13 +180,6 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, user }: Props
           placeholder="Street"
           value={street}
           onChange={(e) => setStreet(e.target.value)}
-        />
-
-        <input
-          className="w-full mb-3 px-3 py-2 border rounded-lg"
-          placeholder="Avatar URL"
-          value={avatarUrl}
-          onChange={(e) => setAvatarUrl(e.target.value)}
         />
 
         {!user && (
