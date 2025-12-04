@@ -6,7 +6,7 @@ type Args = {
   url: string;
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   data?: unknown;
-  params?: Record<string, unknown>;
+  params?: object;
 };
 
 type Err = { status?: number; data?: unknown };
@@ -38,7 +38,7 @@ function axiosBaseQuery(): BaseQueryFn<Args, unknown, Err> {
 export const api = createApi({
   reducerPath: 'api', // name of the slice in Redux store, state will be state.api
   baseQuery: axiosBaseQuery(), // API calling engine (axios)
-  tagTypes: ['Profile', 'Posts', 'Recipes', 'Categories'], // tag types for cache management
+  tagTypes: ['Profile', 'Posts', 'Recipes', 'Categories', 'Users'], // tag types for cache management
   endpoints: () => ({}), // specific endpoints will be added in other files
 });
 // createApi automatically generates a reducer to manage API slice state (cache, loading, error), located in api.reducer.
