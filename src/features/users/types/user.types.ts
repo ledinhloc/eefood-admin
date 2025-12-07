@@ -20,6 +20,7 @@ export interface UserUpdateRequest {
   backgroundUrl?: string;
   allergies?: string[];
   eatingPreferences?: string[];
+  dietaryPreferences?: string[];
 }
 
 
@@ -35,6 +36,7 @@ export interface UserCreateRequest {
   password: string;
   allergies?: string[];
   eatingPreferences?: string[];
+  dietaryPreferences?: string[];
 }
 
 export interface UserResponse {
