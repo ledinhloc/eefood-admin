@@ -114,9 +114,7 @@ export default function UserPage() {
           handleSort={handleSort}
           handleDeleteUser={handleDeleteUser}
           handleOpenEdit={handleOpenEdit}
-          updateRoleUser={(user) =>
-            updateRoleUser({ id: user.id, role: user.role === 'USER' ? 'ADMIN' : 'USER' })
-          }
+          updateRoleUser={updateRoleUser}
         />
 
         <Pagination page={page} totalPages={totalPages} setPage={setPage} usersCount={users.length} />
