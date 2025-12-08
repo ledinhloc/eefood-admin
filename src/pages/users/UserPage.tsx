@@ -3,16 +3,25 @@ import { SearchFilterCard } from '@/features/users/components/SearchFilterCard';
 import { UserDetailModal } from '@/features/users/components/UserDetailModal';
 import UserFormModal from '@/features/users/components/UserFormModal';
 import { UsersTable } from '@/features/users/components/UsersTable';
-import { useCreateUserMutation, useDeleteUserMutation, useGetUsersQuery, useUpdateRoleUserMutation, useUpdateUserMutation } from '@/features/users/services/userApi';
+import {
+  useCreateUserMutation,
+  useDeleteUserMutation,
+  useGetUsersQuery,
+  useUpdateRoleUserMutation,
+  useUpdateUserMutation,
+} from '@/features/users/services/userApi';
 import type { UserResponse } from '@/features/users/types/user.types';
-import { tr } from 'date-fns/locale';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export default function UserPage() {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<'USER' | 'ADMIN' | ''>('');
-  const [providerFilter, setProviderFilter] = useState<'GOOGLE' | 'NORMAL' | ''>('');
-  const [sortBy, setSortBy] = useState<'username' | 'email' | 'createdAt'>('username');
+  const [providerFilter, setProviderFilter] = useState<
+    'GOOGLE' | 'NORMAL' | ''
+  >('');
+  const [sortBy, setSortBy] = useState<'username' | 'email' | 'createdAt'>(
+    'username'
+  );
   const [direction, setDirection] = useState<'asc' | 'desc'>('asc');
   const [page, setPage] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
@@ -29,12 +38,12 @@ export default function UserPage() {
   const handleOpenCreate = () => {
     setEditingUser(null);
     setIsFormOpen(true);
-  }
+  };
 
   const handleOpenEdit = (user: UserResponse) => {
     setEditingUser(user);
     setIsFormOpen(true);
-  }
+  };
 
   const handleSubmitForm = async (data: any) => {
     try {
@@ -47,7 +56,7 @@ export default function UserPage() {
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   const handleDeleteUser = async (id: number) => {
     if (window.confirm('Are you sure to delete this user?')) {
@@ -81,8 +90,12 @@ export default function UserPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-800 mb-2">User Management</h1>
-          <p className="text-slate-600">Manage your food social network users</p>
+          <h1 className="text-4xl font-bold text-slate-800 mb-2">
+            User Management
+          </h1>
+          <p className="text-slate-600">
+            Manage your food social network users
+          </p>
         </div>
 
         <SearchFilterCard
@@ -117,7 +130,12 @@ export default function UserPage() {
           updateRoleUser={updateRoleUser}
         />
 
-        <Pagination page={page} totalPages={totalPages} setPage={setPage} usersCount={users.length} />
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          setPage={setPage}
+          usersCount={users.length}
+        />
         {isFormOpen && (
           <UserFormModal
             isOpen={isFormOpen}
@@ -127,9 +145,13 @@ export default function UserPage() {
           />
         )}
 
-        {selectedUser && <UserDetailModal user={selectedUser} closeModal={() => setSelectedUser(null)} />}
+        {selectedUser && (
+          <UserDetailModal
+            user={selectedUser}
+            closeModal={() => setSelectedUser(null)}
+          />
+        )}
       </div>
-
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { onMessageListener } from '@/features/notifications/config/firebase.ts';
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage.tsx';
 import LoginPage from '@/pages/auth/LoginPage.tsx';
 import ProfilePage from '@/pages/auth/ProfilePage.tsx';
@@ -12,12 +13,24 @@ import RecipePage from '@/pages/recipes/RecipePage.tsx';
 import UserPage from '@/pages/users/UserPage.tsx';
 import AdminRoute from '@/utils/AdminRoute.tsx';
 import AuthRedirect from '@/utils/AuthRedirect.tsx';
+import { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { Toaster } from 'sonner';
+import { toast, Toaster } from 'sonner';
 import { Layout } from './components/layout';
 import AdminDashboardPage from './pages/dashboard/AdminDashboardPage';
 
 function App() {
+  useEffect(() => {
+    onMessageListener()
+      .then((payload: any) => {
+        console.log('New FCM message:', payload);
+
+        toast.info(payload?.notification?.title || 'New Notification', {
+          description: payload?.notification?.body,
+        });
+      })
+      .catch((err) => console.error('FCM onMessage error:', err));
+  }, []);
   return (
     <Router>
       <Routes>
