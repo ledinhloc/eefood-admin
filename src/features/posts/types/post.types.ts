@@ -1,3 +1,8 @@
+export interface ResponseData<T> {
+  status: number;
+  message: string;
+  data?: T;
+}
 export interface PostItem {
   id: number;
   content: string;
@@ -13,10 +18,12 @@ export interface PostItem {
   recipeCategories: string[];
   reactionCounts: Record<string, number>;
   totalShares: number;
+  totalComments: number;
   recipeId: number;
   description: string;
   status: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface PostQueryParams {

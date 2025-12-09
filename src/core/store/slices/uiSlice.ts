@@ -4,9 +4,7 @@ export type ActiveTab =
     | 'dashboard'
     | 'users'
     | 'posts'
-    | 'recipes'
-    | 'comments'
-    | 'notifications';
+    | 'reports';
 
 interface UIState {
     activeTab: ActiveTab;

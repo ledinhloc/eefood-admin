@@ -1,13 +1,22 @@
 import { api } from '@/core/api/api.ts';
-import type {
-  PostCreateUpdateRequest,
-  PostPageResponse,
-  PostPublishResponse,
-  PostQueryParams,
+import {
+  type PostItem,
+  type PostCreateUpdateRequest,
+  type PostPageResponse,
+  type PostPublishResponse,
+  type PostQueryParams,
+  type ResponseData,
 } from '@/features/posts/types/post.types.ts';
 
 export const postApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    getPostById: builder.query<ResponseData<PostItem>, number>({
+      query: (id) => ({
+        url: `/posts/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ['Posts'],
+    }),
     getPosts: builder.query<PostPageResponse, PostQueryParams>({
       query: (params) => ({
         url: '/admin/posts',
@@ -38,4 +47,4 @@ export const postApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetPostsQuery, useUpdatePostMutation, useDeletePostMutation } = postApi;
+export const { useLazyGetPostByIdQuery, useGetPostsQuery, useUpdatePostMutation, useDeletePostMutation } = postApi;

@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { useAppDispatch } from '@/core/store/store.ts';
 import { useLoginMutation } from '@/features/auth/services/authApi.ts';
 import { setCredentials } from '@/features/auth/slices/authSlice.ts';
+import { requestForToken } from '@/features/notifications/config/firebase.ts';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { Oval } from 'react-loader-spinner'; //import spinner
@@ -52,9 +53,18 @@ const LoginForm: React.FC = () => {
     if (!validateForm()) return;
 
     try {
+
+      const fcmToken = await requestForToken();
+
+      if (!fcmToken) {
+        toast.error('Unable to get FCM token. Please allow notifications.');
+        return;
+      }
+
       const response = await login({
         email: formData.email,
         password: formData.password,
+        fcmToken: fcmToken
       }).unwrap();
 
       const user = response.data;

@@ -1,13 +1,22 @@
 import { api } from '@/core/api/api.ts';
-import type {
-  CategoryPageRequest,
-  CategoryPageResponse,
-  RecipePageResponse,
-  RecipeQueryParams,
+import {
+  type CategoryPageRequest,
+  type CategoryPageResponse,
+  type RecipePageResponse,
+  type RecipeQueryParams,
+  type RecipeResponse,
 } from '@/features/recipes/types/recipe.types.ts';
+import type { ResponseData } from '@/features/users/types/user.types.ts';
 
 export const recipeApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    getRecipeById: builder.query<RecipeResponse, number>({
+      query: (id) => ({
+        url: `/recipes/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ['Recipes'],
+    }),
     getCategories: builder.query<CategoryPageResponse, CategoryPageRequest>({
       query: (params) => ({
         url: '/categories',
@@ -27,4 +36,8 @@ export const recipeApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetCategoriesQuery, useGetRecipesQuery } = recipeApi;
+export const {
+  useLazyGetRecipeByIdQuery,
+  useGetCategoriesQuery,
+  useGetRecipesQuery,
+} = recipeApi;

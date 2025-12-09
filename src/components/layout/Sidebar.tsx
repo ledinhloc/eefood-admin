@@ -7,6 +7,7 @@ import {
   FileText,
   LayoutDashboard,
   MessageCircle,
+  MessageSquareWarning,
   Users,
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
@@ -39,21 +40,9 @@ const navigationItems: NavItem[] = [
     description: 'Content and articles',
   },
   {
-    path: '/recipes',
-    name: 'Recipes',
-    icon: ChefHat,
-    description: 'Cooking recipes',
-  },
-  {
-    path: '/comments',
-    name: 'Comments',
-    icon: MessageCircle,
-    description: 'User comments & reviews',
-  },
-  {
-    path: '/notifications',
-    name: 'Notifications',
-    icon: Bell,
+    path: '/reports',
+    name: 'Reports',
+    icon: MessageSquareWarning,
     description: 'Alerts and messages',
   },
 ];

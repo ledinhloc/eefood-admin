@@ -15,8 +15,12 @@ import {
   type RootState,
 } from '@/core/store/store.ts';
 import { logout, resetApiState } from '@/features/auth/slices/authSlice.ts';
+import { NotificationPanel } from '@/features/notifications/components/NotificationPanel.tsx';
+import { useGetUnreadCountQuery } from '@/features/notifications/services/notificationApi.ts';
+import { setUnreadCount, toggleNotificationPanel } from '@/features/notifications/slices/notificationSlice.ts';
 import { Bell, LogOut, Menu, Moon, Sun, User } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -27,6 +31,20 @@ export const Header = () => {
   const { theme, setTheme } = useTheme();
   const { user } = useAppSelector((state) => state.auth);
   const { isSidebarOpen } = useSelector((state: RootState) => state.ui);
+  const { unreadCount } = useSelector(
+    (state: RootState) => state.notification
+  );
+
+  const { data: unreadCountData } = useGetUnreadCountQuery(undefined, {
+    pollingInterval: 60000, 
+    refetchOnMountOrArgChange: true,
+  });
+
+  useEffect(() => {
+    if (unreadCountData?.data !== undefined) {
+      dispatch(setUnreadCount(unreadCountData.data));
+    }
+  }, [unreadCountData, dispatch]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -68,9 +86,18 @@ export const Header = () => {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="relative h-10 w-10">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative h-10 w-10"
+            onClick={() => dispatch(toggleNotificationPanel())}
+          >
             <Bell className="h-5 w-5 text-muted-foreground hover:text-foreground" />
-            <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center w-5 h-5 bg-red-500 text-white text-[10px] font-semibold rounded-full shadow">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
           </Button>
 
           {/*Dark Mode Toggle */}
@@ -138,6 +165,7 @@ export const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <NotificationPanel />
       </div>
     </header>
   );
