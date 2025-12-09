@@ -1,15 +1,17 @@
-import { onMessageListener, requestForToken } from '@/features/notifications/config/firebase.ts';
+import {
+  onMessageListener,
+  requestForToken,
+} from '@/features/notifications/config/firebase.ts';
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage.tsx';
 import LoginPage from '@/pages/auth/LoginPage.tsx';
 import ProfilePage from '@/pages/auth/ProfilePage.tsx';
 import RegisterPage from '@/pages/auth/RegisterPage.tsx';
 import ResetPasswordPage from '@/pages/auth/RestPasswordPage.tsx';
 import VerifyOtpPage from '@/pages/auth/VerifyOtpPage.tsx';
-import CommentPage from '@/pages/comments/CommentPage.tsx';
+import { ReportPage } from '@/pages/comments/CommentPage.tsx';
 import ErrorPage from '@/pages/error/ErrorPage.tsx';
-import NotificationPage from '@/pages/notifications/NotificationPage.tsx';
 import PostPage from '@/pages/posts/PostPage.tsx';
-import RecipePage from '@/pages/recipes/RecipePage.tsx';
+import PostReviewPage from '@/pages/posts/PostReviewPage.tsx';
 import UserPage from '@/pages/users/UserPage.tsx';
 import AdminRoute from '@/utils/AdminRoute.tsx';
 import AuthRedirect from '@/utils/AuthRedirect.tsx';
@@ -18,7 +20,6 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { toast, Toaster } from 'sonner';
 import { Layout } from './components/layout';
 import AdminDashboardPage from './pages/dashboard/AdminDashboardPage';
-import PostReviewPage from '@/pages/posts/PostReviewPage.tsx';
 
 function App() {
   useEffect(() => {
@@ -76,9 +77,7 @@ function App() {
             <Route path="/posts" element={<PostPage />} />
             <Route path="/post/:id" element={<PostReviewPage />} />
             <Route path="/users" element={<UserPage />} />
-            <Route path="/recipes" element={<RecipePage />} />
-            <Route path="/comments" element={<CommentPage />} />
-            <Route path="/notifications" element={<NotificationPage />} />
+            <Route path="/reports" element={<ReportPage />} />
           </Route>
         </Route>
         {/* Error Routes */}

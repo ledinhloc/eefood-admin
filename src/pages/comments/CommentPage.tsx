@@ -1,9 +1,9 @@
-export function CommentPage() {
+export function ReportPage() {
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Manage comment</h1>
+      <h1 className="text-2xl font-bold mb-4">Manage report</h1>
     </div>
   );
 }
 
-export default CommentPage;
+export default ReportPage;
