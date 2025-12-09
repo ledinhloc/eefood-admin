@@ -17,7 +17,7 @@ const messaging = getMessaging(app);
 export const requestForToken = async () => {
   try {
     const currentToken = await getToken(messaging, {
-      vapidKey: import.meta.env.REACT_APP_FIREBASE_VAPID_KEY,
+      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
     });
 
     if (currentToken) {
@@ -33,11 +33,11 @@ export const requestForToken = async () => {
   }
 };
 
-export const onMessageListener = () =>
-  new Promise((resolve) => {
-    onMessage(messaging, (payload) => {
-      resolve(payload);
-    });
+export const onMessageListener = (callback: (payload: any) => void) => {
+  onMessage(messaging, (payload) => {
+    console.log('Message received in foreground:', payload);
+    callback(payload);
   });
+};
 
 export default app;

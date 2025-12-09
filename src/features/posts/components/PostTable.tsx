@@ -19,6 +19,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useState, type JSX } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { PostItem } from '../types/post.types';
 
 export default function PostTable({
@@ -30,6 +31,7 @@ export default function PostTable({
   onEdit: (post: PostItem) => void;
   onDelete: (post: PostItem) => void;
 }) {
+  const navigate = useNavigate();
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
@@ -40,6 +42,19 @@ export default function PostTable({
       setSortField(field);
       setSortOrder('asc');
     }
+  };
+
+  const handlePreview = (postId: number) => {
+    navigate(`/post/${postId}`);
+  };
+
+  const handleRowClick = (postId: number, e: React.MouseEvent) => {
+    // Không navigate nếu click vào button actions
+    const target = e.target as HTMLElement;
+    if (target.closest('button')) {
+      return;
+    }
+    handlePreview(postId);
   };
 
   const sortedPosts = [...posts].sort((a, b) => {
@@ -190,7 +205,11 @@ export default function PostTable({
 
         <TableBody>
           {sortedPosts.map((p, index) => (
-            <TableRow key={p.id} className="text-center">
+            <TableRow
+              key={p.id}
+              className="text-center cursor-pointer hover:bg-gray-50 transition-colors"
+              onClick={(e) => handleRowClick(p.id, e)}
+            >
               <TableCell>{index + 1}</TableCell>
 
               <TableCell>
@@ -269,7 +288,11 @@ export default function PostTable({
                   >
                     <Pencil className="w-4 h-4" />
                   </Button>
-                  <Button onClick={() => onDelete(p)} variant="destructive" size="icon">
+                  <Button
+                    onClick={() => onDelete(p)}
+                    variant="destructive"
+                    size="icon"
+                  >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
