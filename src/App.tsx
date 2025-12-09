@@ -8,7 +8,6 @@ import ProfilePage from '@/pages/auth/ProfilePage.tsx';
 import RegisterPage from '@/pages/auth/RegisterPage.tsx';
 import ResetPasswordPage from '@/pages/auth/RestPasswordPage.tsx';
 import VerifyOtpPage from '@/pages/auth/VerifyOtpPage.tsx';
-import { ReportPage } from '@/pages/reports/ReportPage';
 import ErrorPage from '@/pages/error/ErrorPage.tsx';
 import PostPage from '@/pages/posts/PostPage.tsx';
 import PostReviewPage from '@/pages/posts/PostReviewPage.tsx';
@@ -20,6 +19,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { toast, Toaster } from 'sonner';
 import { Layout } from './components/layout';
 import AdminDashboardPage from './pages/dashboard/AdminDashboardPage';
+import ReportPage from '@/pages/reports/ReportPage.tsx';
 
 function App() {
   useEffect(() => {
