@@ -8,7 +8,7 @@ import ProfilePage from '@/pages/auth/ProfilePage.tsx';
 import RegisterPage from '@/pages/auth/RegisterPage.tsx';
 import ResetPasswordPage from '@/pages/auth/RestPasswordPage.tsx';
 import VerifyOtpPage from '@/pages/auth/VerifyOtpPage.tsx';
-import { ReportPage } from '@/pages/comments/CommentPage.tsx';
+import { ReportPage } from '@/pages/reports/ReportPage';
 import ErrorPage from '@/pages/error/ErrorPage.tsx';
 import PostPage from '@/pages/posts/PostPage.tsx';
 import PostReviewPage from '@/pages/posts/PostReviewPage.tsx';
