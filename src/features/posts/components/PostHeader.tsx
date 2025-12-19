@@ -1,6 +1,11 @@
-import type { Difficulty, PostItem } from '@/features/posts/types/post.types.ts';
+import { useUpdatePostMutation } from '@/features/posts/services/postApi.ts';
+import type {
+  Difficulty,
+  PostItem,
+} from '@/features/posts/types/post.types.ts';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { Clock, MapPin, UtensilsCrossed } from 'lucide-react';
+import { Check, Clock, Loader2, MapPin, UtensilsCrossed, X } from 'lucide-react';
+import { useState } from 'react';
 
 const statusConfig: Record<string, { color: string; label: string }> = {
   REJECT: { color: 'bg-orange-500 text-white', label: 'Từ chối' },
@@ -14,7 +19,54 @@ const difficultyConfig: Record<Difficulty, { color: string; label: string }> = {
   EASY: { color: 'bg-green-500 text-white', label: 'Dễ' },
 };
 
-export default function PostHeader({ post }: { post: PostItem }) {
+interface PostHeaderProps {
+  post: PostItem;
+  onStatusUpdateSuccess?: () => void;
+  onStatusUpdateError?: (error: string) => void;
+}
+
+export default function PostHeader({
+  post,
+  onStatusUpdateSuccess,
+  onStatusUpdateError,
+}: PostHeaderProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(post.status);
+  const [updatePost, { isLoading }] = useUpdatePostMutation();
+
+  const handleStatusChange = (newStatus: string) => {
+    setSelectedStatus(newStatus);
+  };
+
+  const handleSave = async () => {
+    if (selectedStatus === post.status) {
+      setIsEditing(false);
+      return;
+    }
+
+    try {
+      await updatePost({
+        id: post.id,
+        content: post.content,
+        status: selectedStatus,
+      }).unwrap();
+
+      setIsEditing(false);
+      onStatusUpdateSuccess?.();
+    } catch (error: any) {
+      console.error('Failed to update post status:', error);
+      const errorMessage =
+        error?.data?.message || 'Cập nhật trạng thái thất bại';
+      onStatusUpdateError?.(errorMessage);
+      setSelectedStatus(post.status);
+    }
+  };
+
+  const handleCancel = () => {
+    setSelectedStatus(post.status);
+    setIsEditing(false);
+  };
+
   return (
     <>
       {/* User Info & Status */}
@@ -40,11 +92,71 @@ export default function PostHeader({ post }: { post: PostItem }) {
             </p>
           </div>
         </div>
-        <span
-          className={`px-3 py-1.5 rounded-full text-sm font-medium ${statusConfig[post.status]?.color || 'bg-gray-300'}`}
-        >
-          {statusConfig[post.status]?.label || post.status}
-        </span>
+        {/* Status Update Section */}
+        {!isEditing ? (
+          <button
+            onClick={() => setIsEditing(true)}
+            className={`px-4 py-2 rounded-full text-sm font-medium ${
+              statusConfig[post.status]?.color || 'bg-gray-300'
+            } hover:opacity-90 hover:shadow-lg transition-all flex items-center gap-2 group`}
+          >
+            <span>{statusConfig[post.status]?.label || post.status}</span>
+            <svg
+              className="w-4 h-4 transition-transform group-hover:rotate-180"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+        ) : (
+          <div className="flex items-center gap-2">
+            <select
+              value={selectedStatus}
+              onChange={(e) => handleStatusChange(e.target.value)}
+              disabled={isLoading}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 border-gray-300 focus:border-blue-500 focus:outline-none ${
+                statusConfig[selectedStatus]?.color || 'bg-gray-300'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              {Object.entries(statusConfig).map(([key, config]) => (
+                <option key={key} value={key}>
+                  {config.label}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex items-center gap-1">
+              <button
+                onClick={handleSave}
+                disabled={isLoading}
+                className="p-1.5 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Lưu"
+              >
+                {isLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Check className="w-4 h-4" />
+                )}
+              </button>
+
+              <button
+                onClick={handleCancel}
+                disabled={isLoading}
+                className="p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Hủy"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Title */}

@@ -20,6 +20,7 @@ import { toast, Toaster } from 'sonner';
 import { Layout } from './components/layout';
 import AdminDashboardPage from './pages/dashboard/AdminDashboardPage';
 import ReportPage from '@/pages/reports/ReportPage.tsx';
+import NotificationPage from '@/pages/notifications/NotificationPage.tsx';
 
 function App() {
   useEffect(() => {
@@ -33,7 +34,6 @@ function App() {
         if (permission === 'granted') {
           const token = await requestForToken();
           if (token) {
-            // TODO: Gửi token lên server để lưu
             console.log('FCM Token ready:', token);
           }
         }
@@ -45,7 +45,7 @@ function App() {
     initFCM();
 
     onMessageListener((payload: any) => {
-      console.log('📩 New FCM message:', payload);
+      console.log('New FCM message:', payload);
 
       const title =
         payload?.notification?.title ||
@@ -78,6 +78,7 @@ function App() {
             <Route path="/post/:id" element={<PostReviewPage />} />
             <Route path="/users" element={<UserPage />} />
             <Route path="/reports" element={<ReportPage />} />
+            <Route path="/notifications" element={<NotificationPage />} />
           </Route>
         </Route>
         {/* Error Routes */}
