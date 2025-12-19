@@ -3,10 +3,8 @@ import { useAppDispatch, type RootState } from '@/core/store/store.ts';
 import { cn } from '@/lib/utils';
 import {
   Bell,
-  ChefHat,
   FileText,
   LayoutDashboard,
-  MessageCircle,
   MessageSquareWarning,
   Users,
 } from 'lucide-react';
@@ -43,6 +41,12 @@ const navigationItems: NavItem[] = [
     path: '/reports',
     name: 'Reports',
     icon: MessageSquareWarning,
+    description: 'Report violations ',
+  },
+  {
+    path: '/notifications',
+    name: 'Notifications',
+    icon: Bell,
     description: 'Alerts and messages',
   },
 ];

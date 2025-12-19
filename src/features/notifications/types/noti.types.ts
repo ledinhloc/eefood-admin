@@ -12,7 +12,7 @@ export interface NotificationResponse {
   createdAt: string;
 }
 
-export interface NotificationRequest {
+export interface NotificationParam {
   page: number;
   limit: number;
 }
@@ -20,10 +20,20 @@ export interface NotificationRequest {
 export interface NotificationPageResponse {
   message: string;
   data: {
-      content: NotificationResponse[];
-      totalPages: number;
-      totalElements: number;
-      number: number;
-      size: number;
-    };
+    content: NotificationResponse[];
+    totalPages: number;
+    totalElements: number;
+    number: number;
+    size: number;
+  };
+}
+
+export interface NotificationRequest {
+  title: string;
+  body: string;
+  path?: string | null;
+  avatarUrl?: string | null;
+  postImageUrl?: string | null;
+  type: string;
+  userId?: number | null;
 }

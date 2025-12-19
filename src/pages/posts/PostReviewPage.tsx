@@ -39,6 +39,18 @@ export default function PostReviewPage() {
     }
   }, [errorPost, navigate]);
 
+  const handleStatusUpdateSuccess = () => {
+    toast.success('Cập nhật trạng thái bài viết thành công!');
+
+    if (id) {
+      getPostById(Number(id));
+    }
+  };
+
+  const handleStatusUpdateError = (errorMsg: string) => {
+    toast.error(errorMsg);
+  };
+
   if (isPostLoading || isRecipeLoading) {
     return (
       <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center">
@@ -71,7 +83,11 @@ export default function PostReviewPage() {
 
         <div className="overflow-y-auto flex-1">
           <div className="p-6 space-y-6">
-            <PostHeader post={post} />
+            <PostHeader
+              post={post}
+              onStatusUpdateSuccess={handleStatusUpdateSuccess}
+              onStatusUpdateError={handleStatusUpdateError}
+            />
             <PostContent post={post} recipe={recipe} />
           </div>
         </div>

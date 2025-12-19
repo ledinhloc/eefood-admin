@@ -1,6 +1,7 @@
 import { api } from '@/core/api/api.ts';
 import type {
   NotificationPageResponse,
+  NotificationParam,
   NotificationRequest,
 } from '@/features/notifications/types/noti.types.ts';
 
@@ -8,7 +9,7 @@ export const notificationApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getUserNotification: builder.query<
       NotificationPageResponse,
-      NotificationRequest
+      NotificationParam
     >({
       query: (params) => ({
         url: '/notifications',
@@ -53,6 +54,14 @@ export const notificationApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Notifications', 'UnreadCount'],
     }),
+    sendNotification: builder.mutation<void, NotificationRequest>({
+      query: (body) => ({
+        url: '/notifications',
+        method: 'POST',
+        data: body,
+      }),
+      invalidatesTags: ['Notifications'],
+    }),
   }),
 });
 
@@ -63,4 +72,5 @@ export const {
   useMarkAllAsReadMutation,
   useDeleteNotificationMutation,
   useDeleteAllNotificationsMutation,
+  useSendNotificationMutation
 } = notificationApi;
