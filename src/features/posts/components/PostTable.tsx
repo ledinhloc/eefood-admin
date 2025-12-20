@@ -82,15 +82,17 @@ export default function PostTable({
   };
 
   const statusColor: Record<string, string> = {
-    REJECT: 'bg-orange-500 text-white',
+    REJECTED: 'bg-orange-500 text-white',
     PENDING: 'bg-yellow-500 text-black',
     APPROVED: 'bg-blue-500 text-white',
+    EDITED_PENDING: 'bg-purple-500 text-white',
   };
 
   const statusText: Record<string, string> = {
-    REJECT: 'Từ chối',
+    REJECTED: 'Từ chối',
     PENDING: 'Chưa duyệt',
     APPROVED: 'Đã duyệt',
+    EDITED_PENDING: 'Duyệt sau sửa',
   };
 
   const reactionIcons: Record<string, JSX.Element> = {
