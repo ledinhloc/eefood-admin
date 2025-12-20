@@ -4,13 +4,24 @@ import type {
   PostItem,
 } from '@/features/posts/types/post.types.ts';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { Check, Clock, Loader2, MapPin, UtensilsCrossed, X } from 'lucide-react';
+import {
+  Check,
+  Clock,
+  Loader2,
+  MapPin,
+  UtensilsCrossed,
+  X,
+} from 'lucide-react';
 import { useState } from 'react';
 
 const statusConfig: Record<string, { color: string; label: string }> = {
-  REJECT: { color: 'bg-orange-500 text-white', label: 'Từ chối' },
+  REJECTED: { color: 'bg-orange-500 text-white', label: 'Từ chối' },
   PENDING: { color: 'bg-yellow-500 text-black', label: 'Chưa duyệt' },
   APPROVED: { color: 'bg-blue-500 text-white', label: 'Đã duyệt' },
+  EDITED_PENDING: {
+    color: 'bg-purple-500 text-white',
+    label: 'Chờ duyệt sau sửa',
+  },
 };
 
 const difficultyConfig: Record<Difficulty, { color: string; label: string }> = {
