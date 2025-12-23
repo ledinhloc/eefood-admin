@@ -80,3 +80,26 @@ export interface PostPublishResponse {
 }
 
 export type Difficulty = 'HARD' | 'MEDIUM' | 'EASY';
+
+export interface ApprovePostResponse {
+  id: number;
+  postId: number;
+  recipeId: number;
+  userId: number;
+  status: string;
+  summary: string;
+  totalScore: number;
+  recipeCompleteness: number;
+  ingredientSafety: number;
+  stepClarity: number;
+  contentAppropriate: number;
+  contentRelevance: number;
+  mediaQuality: number;
+  completenessNote: string;
+  safetyNote: string;
+  clarityNote: string;
+  appropriatenessNote: string;
+  relevanceNote: string;
+  mediaQualityNote: string;
+  createdAt: string;
+}

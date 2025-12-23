@@ -1,7 +1,8 @@
 import { api } from '@/core/api/api.ts';
 import {
-  type PostItem,
+  type ApprovePostResponse,
   type PostCreateUpdateRequest,
+  type PostItem,
   type PostPageResponse,
   type PostPublishResponse,
   type PostQueryParams,
@@ -10,6 +11,16 @@ import {
 
 export const postApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    getApproveHistory: builder.query<
+      ResponseData<ApprovePostResponse[]>,
+      number
+    >({
+      query: (postId) => ({
+        url: `/posts/${postId}/approve-history`,
+        method: 'GET',
+      }),
+      providesTags: ['ApproveHistory'],
+    }),
     getPostById: builder.query<ResponseData<PostItem>, number>({
       query: (id) => ({
         url: `/posts/${id}`,
@@ -47,4 +58,10 @@ export const postApi = api.injectEndpoints({
   }),
 });
 
-export const { useLazyGetPostByIdQuery, useGetPostsQuery, useUpdatePostMutation, useDeletePostMutation } = postApi;
+export const {
+  useGetApproveHistoryQuery,
+  useLazyGetPostByIdQuery,
+  useGetPostsQuery,
+  useUpdatePostMutation,
+  useDeletePostMutation,
+} = postApi;

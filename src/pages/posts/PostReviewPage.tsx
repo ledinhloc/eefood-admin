@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button.tsx';
+import ApproveHistoryList from '@/features/posts/components/ApproveHistoryList.tsx';
 import PostContent from '@/features/posts/components/PostContent.tsx';
 import PostHeader from '@/features/posts/components/PostHeader.tsx';
 import { useLazyGetPostByIdQuery } from '@/features/posts/services/postApi.ts';
@@ -7,7 +8,6 @@ import { X } from 'lucide-react';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
-
 
 export default function PostReviewPage() {
   const { id } = useParams<{ id: string }>();
@@ -66,7 +66,7 @@ export default function PostReviewPage() {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
         <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between z-10">
           <h2 className="text-lg font-semibold text-gray-800">
             Chi tiết bài viết
@@ -82,13 +82,23 @@ export default function PostReviewPage() {
         </div>
 
         <div className="overflow-y-auto flex-1">
-          <div className="p-6 space-y-6">
-            <PostHeader
-              post={post}
-              onStatusUpdateSuccess={handleStatusUpdateSuccess}
-              onStatusUpdateError={handleStatusUpdateError}
-            />
-            <PostContent post={post} recipe={recipe} />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+            {/* Main Content - 2 columns */}
+            <div className="lg:col-span-2 space-y-6">
+              <PostHeader
+                post={post}
+                onStatusUpdateSuccess={handleStatusUpdateSuccess}
+                onStatusUpdateError={handleStatusUpdateError}
+              />
+              <PostContent post={post} recipe={recipe} />
+            </div>
+
+            {/* AI Approval History Sidebar - 1 column */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-6">
+                <ApproveHistoryList postId={post.id} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
