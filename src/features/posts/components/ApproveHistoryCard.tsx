@@ -75,7 +75,7 @@ export default function ApproveHistoryCard({
               <div
                 className={`font-semibold ${getScoreColor(history.totalScore)}`}
               >
-                Điểm: {history.totalScore.toFixed(1)}/10
+                Điểm: {history.totalScore.toFixed(1)}/100
               </div>
             </div>
           </div>
