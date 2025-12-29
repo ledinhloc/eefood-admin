@@ -17,6 +17,7 @@ import {
 import { Bell, Check, ChevronRight, Loader2, Trash2, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import avatar from '@/assets/avatar.png';
 
 export const NotificationPanel = () => {
   const navigate = useNavigate();
@@ -164,7 +165,10 @@ export const NotificationPanel = () => {
               {/* Avatar with status indicator */}
               <div className="relative flex-shrink-0">
                 <img
-                  src={n.avatarUrl}
+                  src={
+                    n.avatarUrl ??
+                    avatar
+                  }
                   alt="avatar"
                   className="w-9 h-9 rounded-full object-cover ring-2 ring-white dark:ring-gray-800"
                 />

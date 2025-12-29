@@ -140,7 +140,7 @@ export default function ApproveHistoryDetail({
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-600 mb-1">Thang điểm</p>
-              <p className="text-2xl font-semibold text-gray-500">/ 10</p>
+              <p className="text-2xl font-semibold text-gray-500">/ 100</p>
             </div>
           </div>
 

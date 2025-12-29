@@ -32,7 +32,7 @@ export const postApi = api.injectEndpoints({
       query: (params) => ({
         url: '/admin/posts',
         method: 'GET',
-        params: params as Record<string, unknown>,
+        params: params,
       }),
       providesTags: ['Posts'],
     }),
