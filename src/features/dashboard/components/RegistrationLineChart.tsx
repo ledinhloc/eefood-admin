@@ -39,7 +39,7 @@ export const RegistrationLineChart: React.FC<RegistrationLineChartProps> = ({
     <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
       <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
         <TrendingUp className="w-5 h-5 text-green-500" />
-        Đăng Ký Gần Đây (7 Ngày)
+        Đăng Ký Gần Đây (20 Ngày)
       </h3>
 
       <div className="relative">
