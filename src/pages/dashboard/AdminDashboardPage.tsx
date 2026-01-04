@@ -1,10 +1,11 @@
+import { VietnamUserMap } from "@/features/dashboard/components/map/VietnamUserMap.tsx";
 import { Podium3D } from "@/features/dashboard/components/Podium3D.tsx";
 import { RegistrationLineChart } from "@/features/dashboard/components/RegistrationLineChart.tsx";
 import { StatsCard } from "@/features/dashboard/components/StatsCard.tsx";
 import { TopCreatorsRanking } from "@/features/dashboard/components/TopCreatorsRanking.tsx";
 import { TopLikedPosts } from "@/features/dashboard/components/TopLikedPosts.tsx";
 import { ViolatedPostsChart } from "@/features/dashboard/components/ViolatedPostsChart.tsx";
-import { useGetPostStatisticsQuery, useGetUserStatisticsQuery } from "@/features/dashboard/slices/dashboardApi.ts";
+import { useGetPostStatisticsQuery, useGetUserStatisticsQuery } from "@/features/dashboard/services/dashboardApi";
 import { AlertTriangle, TrendingUp, Users } from "lucide-react";
 
 export const AdminDashboardPage: React.FC = () => {
@@ -57,7 +58,9 @@ export const AdminDashboardPage: React.FC = () => {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
             Dashboard Thống Kê
           </h1>
-          <p className="text-gray-600">Tổng quan về người dùng và bài viết của hệ thống</p>
+          <p className="text-gray-600">
+            Tổng quan về người dùng và bài viết của hệ thống
+          </p>
         </div>
 
         {/* Stats Cards Row */}
@@ -99,15 +102,23 @@ export const AdminDashboardPage: React.FC = () => {
             )}
 
             {/* Registration Chart */}
-            {userData?.recentRegistrations && userData.recentRegistrations.length > 0 && (
-              <RegistrationLineChart data={userData.recentRegistrations} />
-            )}
+            {userData?.recentRegistrations &&
+              userData.recentRegistrations.length > 0 && (
+                <RegistrationLineChart data={userData.recentRegistrations} />
+              )}
           </div>
 
           {/* Top Post Creators */}
           {userData?.topPostCreators && userData.topPostCreators.length > 0 && (
             <div className="mt-6">
               <TopCreatorsRanking creators={userData.topPostCreators} />
+            </div>
+          )}
+
+          {/* Vietnam User Map - Full Width */}
+          {userData?.cityStatistics && userData.cityStatistics.length > 0 && (
+            <div className="mt-6">
+              <VietnamUserMap cityStatistics={userData.cityStatistics} />
             </div>
           )}
         </div>
@@ -126,9 +137,10 @@ export const AdminDashboardPage: React.FC = () => {
             )}
 
             {/* Violated Posts Chart */}
-            {postData?.recentViolatedPosts && postData.recentViolatedPosts.length > 0 && (
-              <ViolatedPostsChart posts={postData.recentViolatedPosts} />
-            )}
+            {postData?.recentViolatedPosts &&
+              postData.recentViolatedPosts.length > 0 && (
+                <ViolatedPostsChart posts={postData.recentViolatedPosts} />
+              )}
           </div>
         </div>
       </div>

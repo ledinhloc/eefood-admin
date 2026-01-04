@@ -3,7 +3,7 @@ import React from 'react';
 
 interface TopUserPostResponse {
   userInfo: {
-    id: string;
+    id: number;
     username: string;
     email: string;
     avatarUrl: string;

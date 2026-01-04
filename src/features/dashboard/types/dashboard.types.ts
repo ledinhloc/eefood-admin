@@ -1,3 +1,58 @@
+export interface VietnamUserMapProps {
+  cityStatistics: UserCityStatesResponse[];
+}
+
+export interface ProvinceProperties {
+  name: string;
+  id: string;
+}
+
+export interface ProvinceFeature {
+  type: 'Feature';
+  properties: ProvinceProperties;
+  geometry: {
+    type: 'Polygon';
+    coordinates: number[][][];
+  };
+}
+
+export interface VietnamGeoJSON {
+  type: 'FeatureCollection';
+  features: ProvinceFeature[];
+}
+
+export interface MapStats {
+  total: number;
+  max: number;
+  topCity: {
+    city: string;
+    totalUsers: number;
+  };
+}
+
+export interface DisplayData {
+  name: string;
+  users: number;
+}
+
+export interface MapUpdaterProps {
+  center: [number, number];
+  zoom: number;
+}
+
+export interface ProvinceStyle {
+  fillColor: string;
+  weight: number;
+  opacity: number;
+  color: string;
+  fillOpacity: number;
+}
+
+export interface UserCityStatesResponse {
+  city: String;
+  totalUsers: number;
+}
+
 export interface UserInfo {
   id: number;
   username: string;
@@ -25,6 +80,7 @@ export interface UserStatistics {
   topInfluencers: TopUserResponse[];
   recentRegistrations: UserRegistrationStatsResponse[];
   topPostCreators: TopUserPostResponse[];
+  cityStatistics: UserCityStatesResponse[];
 }
 
 export interface TopPostResponse {
